@@ -10,6 +10,8 @@ the version's GitHub Release.
 
 ## [Unreleased]
 
+## [0.0.1] - 2026-10-29
+
 ### Added
 
 - First version of the AppTable Elior integration (Elior school canteens).
@@ -25,4 +27,5 @@ the version's GitHub Release.
 - CI (Prettier, ESLint, tests on Node 22 and 24, store checks, Docker build), UI-driven
   release, multi-arch image build, GitHub Releases, Dependabot.
 
-[Unreleased]: https://github.com/prohand/gladys-apptable-elior/commits/main
+[Unreleased]: https://github.com/prohand/gladys-apptable-elior/compare/v0.0.1...HEAD
+[0.0.1]: https://github.com/prohand/gladys-apptable-elior/releases/tag/v0.0.1

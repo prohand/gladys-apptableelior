@@ -8,8 +8,8 @@
     "de": "Elior-Schulkantine: Speisepläne, Essensbuchungen und Rechnungen deiner Kinder in Gladys.",
     "es": "Comedor escolar Elior: menús, reservas de comidas y facturas de sus hijos en Gladys."
   },
-  "version": "0.0.0",
-  "docker_image": "ghcr.io/prohand/gladys-apptable-elior:0.0.0",
+  "version": "0.0.1",
+  "docker_image": "ghcr.io/prohand/gladys-apptableelior:0.0.1",
   "gladys_version": ">=5.3.0",
   "cover_image": "https://raw.githubusercontent.com/prohand/gladys-apptable-elior/main/cover.png",
   "categories": ["services", "notifications"],
@@ -57,7 +57,12 @@
     {
       "key": "email",
       "type": "string",
-      "label": { "en": "Email", "fr": "E-mail", "de": "E-Mail", "es": "Correo electrónico" },
+      "label": {
+        "en": "Email",
+        "fr": "E-mail",
+        "de": "E-Mail",
+        "es": "Correo electrónico"
+      },
       "placeholder": {
         "en": "parent@example.com",
         "fr": "parent@exemple.fr",
@@ -69,7 +74,12 @@
     {
       "key": "password",
       "type": "secret",
-      "label": { "en": "Password", "fr": "Mot de passe", "de": "Passwort", "es": "Contraseña" },
+      "label": {
+        "en": "Password",
+        "fr": "Mot de passe",
+        "de": "Passwort",
+        "es": "Contraseña"
+      },
       "required": true
     },
     {
@@ -142,7 +152,12 @@
         {
           "key": "label",
           "type": "string",
-          "label": { "en": "Invoice", "fr": "Facture", "de": "Rechnung", "es": "Factura" }
+          "label": {
+            "en": "Invoice",
+            "fr": "Facture",
+            "de": "Rechnung",
+            "es": "Factura"
+          }
         },
         {
           "key": "amount",
@@ -195,35 +210,70 @@
           "key": "device",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Child", "fr": "Enfant", "de": "Kind", "es": "Niño" }
+          "label": {
+            "en": "Child",
+            "fr": "Enfant",
+            "de": "Kind",
+            "es": "Niño"
+          }
         },
         {
           "key": "change",
           "type": "multi_select",
-          "label": { "en": "Change", "fr": "Changement", "de": "Änderung", "es": "Cambio" },
+          "label": {
+            "en": "Change",
+            "fr": "Changement",
+            "de": "Änderung",
+            "es": "Cambio"
+          },
           "options": [
             {
               "value": "booked",
-              "label": { "en": "Booked", "fr": "Réservé", "de": "Gebucht", "es": "Reservado" }
+              "label": {
+                "en": "Booked",
+                "fr": "Réservé",
+                "de": "Gebucht",
+                "es": "Reservado"
+              }
             },
             {
               "value": "cancelled",
-              "label": { "en": "Cancelled", "fr": "Annulé", "de": "Storniert", "es": "Cancelado" }
+              "label": {
+                "en": "Cancelled",
+                "fr": "Annulé",
+                "de": "Storniert",
+                "es": "Cancelado"
+              }
             }
           ]
         },
         {
           "key": "when",
           "type": "multi_select",
-          "label": { "en": "Day", "fr": "Jour", "de": "Tag", "es": "Día" },
+          "label": {
+            "en": "Day",
+            "fr": "Jour",
+            "de": "Tag",
+            "es": "Día"
+          },
           "options": [
             {
               "value": "today",
-              "label": { "en": "Today", "fr": "Aujourd'hui", "de": "Heute", "es": "Hoy" }
+              "label": {
+                "en": "Today",
+                "fr": "Aujourd'hui",
+                "de": "Heute",
+                "es": "Hoy"
+              }
             },
             {
               "value": "tomorrow",
-              "label": { "en": "Tomorrow", "fr": "Demain", "de": "Morgen", "es": "Mañana" }
+              "label": {
+                "en": "Tomorrow",
+                "fr": "Demain",
+                "de": "Morgen",
+                "es": "Mañana"
+              }
             }
           ]
         }
@@ -293,13 +343,23 @@
           "key": "device",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Child", "fr": "Enfant", "de": "Kind", "es": "Niño" },
+          "label": {
+            "en": "Child",
+            "fr": "Enfant",
+            "de": "Kind",
+            "es": "Niño"
+          },
           "required": true
         },
         {
           "key": "day",
           "type": "select",
-          "label": { "en": "Day", "fr": "Jour", "de": "Tag", "es": "Día" },
+          "label": {
+            "en": "Day",
+            "fr": "Jour",
+            "de": "Tag",
+            "es": "Día"
+          },
           "required": false,
           "default": "next",
           "options": [
@@ -314,11 +374,21 @@
             },
             {
               "value": "today",
-              "label": { "en": "Today", "fr": "Aujourd'hui", "de": "Heute", "es": "Hoy" }
+              "label": {
+                "en": "Today",
+                "fr": "Aujourd'hui",
+                "de": "Heute",
+                "es": "Hoy"
+              }
             },
             {
               "value": "tomorrow",
-              "label": { "en": "Tomorrow", "fr": "Demain", "de": "Morgen", "es": "Mañana" }
+              "label": {
+                "en": "Tomorrow",
+                "fr": "Demain",
+                "de": "Morgen",
+                "es": "Mañana"
+              }
             }
           ]
         }
@@ -327,7 +397,12 @@
         {
           "key": "menu",
           "type": "string",
-          "label": { "en": "Menu", "fr": "Menu", "de": "Speiseplan", "es": "Menú" }
+          "label": {
+            "en": "Menu",
+            "fr": "Menu",
+            "de": "Speiseplan",
+            "es": "Menú"
+          }
         },
         {
           "key": "has_menu",
@@ -460,11 +535,21 @@
             },
             {
               "value": "today",
-              "label": { "en": "Today", "fr": "Aujourd'hui", "de": "Heute", "es": "Hoy" }
+              "label": {
+                "en": "Today",
+                "fr": "Aujourd'hui",
+                "de": "Heute",
+                "es": "Hoy"
+              }
             },
             {
               "value": "tomorrow",
-              "label": { "en": "Tomorrow", "fr": "Demain", "de": "Morgen", "es": "Mañana" }
+              "label": {
+                "en": "Tomorrow",
+                "fr": "Demain",
+                "de": "Morgen",
+                "es": "Mañana"
+              }
             }
           ]
         }

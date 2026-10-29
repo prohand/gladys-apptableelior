@@ -1,6 +1,6 @@
 {
   "name": "gladys-apptable-elior",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "Gladys Assistant external integration for AppTable, Elior's school canteen app: menus, meal bookings and invoices.",
   "type": "module",
