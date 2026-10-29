@@ -1,0 +1,113 @@
+# AppTable Elior — Dokumentation
+
+Diese Integration verbindet Gladys mit **AppTable**, der App der **Elior**-Schulkantinen
+(sie ersetzt die frühere App Bon'App). Für jedes deiner Kinder liest sie den
+Kantinen-Speiseplan und die Essensbuchung, für dein Konto die offenen Rechnungen.
+
+## Voraussetzungen
+
+- Gladys **5.3** oder neuer.
+- Ein AppTable-Konto (das der mobilen App oder von
+  [apptable.elior.com](https://apptable.elior.com)) mit mindestens einem zugeordneten Kind.
+- Gladys braucht Internetzugang: AppTable ist ein **Cloud**-Dienst.
+
+## Einrichtung
+
+1. Installiere die Integration **AppTable Elior** aus dem Integrationskatalog.
+2. Fülle im Bildschirm **Konfiguration** der Integration aus:
+   - **E-Mail**: die Adresse deines AppTable-Kontos;
+   - **Passwort**: das Passwort dieses Kontos (ein geheimes Feld, nie angezeigt und nie
+     in die Logs geschrieben);
+   - **Aktualisierungsintervall**: wie oft AppTable gelesen wird, in Minuten
+     (standardmäßig 60, 15 bis 1440).
+3. Klicke auf **Verbindung testen**: Die Meldung nennt die Zahl der gefundenen Kinder und
+   der offenen Rechnungen.
+4. Füge im Reiter **Entdecken** die angebotenen Geräte hinzu.
+
+Wird das Passwort abgelehnt, zeigt der Konfigurationsbildschirm das an. Ist AppTable
+nicht erreichbar, versucht es die Integration beim nächsten Intervall von selbst erneut.
+
+## Geräte
+
+**Ein Gerät pro Kind** — „Cantine Léa“:
+
+| Funktion                  | Typ                  | Inhalt                                      |
+| ------------------------- | -------------------- | ------------------------------------------- |
+| Repas réservé aujourd'hui | Schalter (nur lesen) | 1 = heute gebucht, 0 = nicht gebucht        |
+| Repas réservé demain      | Schalter (nur lesen) | 1 = morgen gebucht, 0 = nicht gebucht       |
+| Menu d'aujourd'hui        | Text                 | „Carottes râpées, Poulet basquaise, Yaourt“ |
+| Menu de demain            | Text                 | dasselbe für morgen                         |
+
+Ein Tag ohne Essen (Wochenende, Ferien, Speiseplan noch nicht veröffentlicht) zeigt „—“.
+Buchungen erscheinen nur, wenn dein Konto die Buchungen dieses Kindes verwaltet.
+
+**Ein Gerät für das Konto** — „AppTable – Factures“:
+
+| Funktion         | Typ     | Inhalt                                      |
+| ---------------- | ------- | ------------------------------------------- |
+| Montant à payer  | Währung | Summe der unbezahlten Rechnungen, in Euro   |
+| Factures à payer | Zähler  | Zahl der Rechnungen, die auf Zahlung warten |
+
+Geräte- und Funktionsnamen sind französisch, wie der AppTable-Dienst: Du kannst sie in
+Gladys umbenennen. Buchungen werden in der AppTable-App geändert (dort stehen die Fristen
+und Preise der Gemeinde): In Gladys sind sie nur lesbar.
+
+### Geschwister: ein einziger Speiseplan
+
+Zwei Kinder, die im **selben Schulrestaurant und in derselben Stufe** essen, haben
+denselben Speiseplan. Die Integration fragt ihn dann **nur einmal** bei AppTable ab, und
+das Widget „Kantinen-Speiseplan“ zeigt ihn einmal mit den Vornamen der betroffenen
+Kinder. Jedes Kind behält trotzdem sein eigenes Gerät und seine eigenen Buchungen.
+
+## Szenen-Auslöser
+
+- **Eine neue Kantinenrechnung ist verfügbar** — im Konto ist gerade eine Rechnung
+  erschienen. Variablen: `label`, `amount` (in €), `period` (Monat, JJJJ-MM), `paid`.
+  Die bei der ersten Installation schon vorhandenen Rechnungen werden nicht gemeldet.
+- **Eine Essensbuchung hat sich geändert** — das Essen eines Kindes heute oder morgen
+  wurde gebucht oder storniert (vom anderen Elternteil, der Schule oder dir). Filter: das
+  Kind, die Änderung (gebucht / storniert), der Tag (heute / morgen). Variablen:
+  `child_name`, `change`, `when`, `date`.
+
+## Szenen-Aktionen
+
+- **Kantinen-Speiseplan eines Kindes lesen** — wähle das Kind und den Tag (nächste
+  Mahlzeit, heute, morgen). Ergebnisse: `menu` (der Speiseplan in einer Zeile),
+  `has_menu`, `date`, `booked`, `child_name`. „Nächste Mahlzeit“ heißt heute bis 14 Uhr,
+  danach der nächste Tag mit Speiseplan (am Freitagnachmittag der Montag).
+- **AppTable jetzt aktualisieren** — liest AppTable, ohne auf das Intervall zu warten.
+  Ergebnisse: `children`, `amount_due`, `invoices_to_pay`.
+
+Beispiel für eine Morgenszene: Auslöser „jeden Tag um 7:30 Uhr“, Aktion
+„Kantinen-Speiseplan eines Kindes lesen“, dann „Nachricht senden“ mit dem Text
+`Heute in der Kantine: {{0.0.menu}}`.
+
+## Dashboard-Widgets
+
+- **Kantinen-Speiseplan** — der Speiseplan des gewählten Tages (nächste Mahlzeit, heute
+  oder morgen). Ein Speiseplan für alle Kinder: Die Gerichte werden direkt aufgelistet.
+  Verschiedene Speisepläne (verschiedene Schulen): eine Zeile pro Speiseplan, Details per
+  Tippen. Darunter die Buchung jedes Kindes für diesen Tag.
+- **Kantinenkonto** — offener Betrag und Zahl der Rechnungen (live), die Buchungen für
+  morgen, die Uhrzeit der letzten Aktualisierung, eine Schaltfläche **Aktualisieren** und
+  ein Link zu AppTable.
+
+## Häufige Fragen
+
+**Der Speiseplan zeigt „—“.** An diesem Tag gibt es kein Essen, oder die Küche hat den
+Speiseplan noch nicht veröffentlicht.
+
+**Die Rechnungen erscheinen nicht.** Manche Gemeinden rechnen nicht über AppTable ab: Das
+Gerät „Factures“ bleibt dann leer, die Speisepläne funktionieren trotzdem.
+
+**Werden meine Daten weitergegeben?** Nein. Die Integration spricht direkt mit AppTable,
+mit deinem Konto, von deinem Gladys aus. Das Passwort bleibt im geheimen Feld von Gladys.
+
+**Ist das eine offizielle Integration von Elior?** Nein. Es ist eine
+Community-Integration, die dieselbe Schnittstelle wie die AppTable-Website nutzt. Ändert
+Elior diese Schnittstelle, kann ein Update der Integration nötig sein.
+
+## Fehlersuche
+
+Aktiviere **Ausführliche Logs** in der Konfiguration und lies dann die Logs der
+Integration. Passwort und Anmelde-Token erscheinen dort nie.

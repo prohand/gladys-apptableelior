@@ -1,0 +1,491 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "AppTable Elior",
+  "description": {
+    "en": "School canteen by Elior: your children's menus, meal bookings and invoices in Gladys.",
+    "fr": "Cantine scolaire Elior : menus, réservations de repas et factures de vos enfants dans Gladys.",
+    "de": "Elior-Schulkantine: Speisepläne, Essensbuchungen und Rechnungen deiner Kinder in Gladys.",
+    "es": "Comedor escolar Elior: menús, reservas de comidas y facturas de sus hijos en Gladys."
+  },
+  "version": "0.0.0",
+  "docker_image": "ghcr.io/prohand/gladys-apptable-elior:0.0.0",
+  "gladys_version": ">=5.3.0",
+  "cover_image": "https://raw.githubusercontent.com/prohand/gladys-apptable-elior/main/cover.png",
+  "categories": ["services", "notifications"],
+  "keywords": [
+    "elior",
+    "apptable",
+    "app'table",
+    "bon'app",
+    "cantine",
+    "restauration scolaire",
+    "menu cantine",
+    "école",
+    "school canteen"
+  ],
+  "countries": ["FR", "MC"],
+  "transports": ["cloud"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Your AppTable account",
+        "fr": "Votre compte AppTable",
+        "de": "Dein AppTable-Konto",
+        "es": "Su cuenta de AppTable"
+      },
+      "description": {
+        "en": "Use the email and password you sign in to the AppTable app with (Elior school canteens). Your children are found automatically: one device per child, plus one for the invoices.",
+        "fr": "Utilisez l'e-mail et le mot de passe de l'application AppTable (cantines scolaires Elior). Vos enfants sont trouvés automatiquement : un appareil par enfant, plus un pour les factures.",
+        "de": "Verwende die E-Mail-Adresse und das Passwort der AppTable-App (Elior-Schulkantinen). Deine Kinder werden automatisch gefunden: ein Gerät pro Kind, dazu eines für die Rechnungen.",
+        "es": "Use el correo y la contraseña de la aplicación AppTable (comedores escolares Elior). Sus hijos se encuentran automáticamente: un dispositivo por niño, más uno para las facturas."
+      },
+      "links": [
+        {
+          "url": "https://apptable.elior.com",
+          "label": {
+            "en": "AppTable website",
+            "fr": "Site AppTable",
+            "de": "AppTable-Website",
+            "es": "Sitio de AppTable"
+          }
+        }
+      ]
+    },
+    {
+      "key": "email",
+      "type": "string",
+      "label": { "en": "Email", "fr": "E-mail", "de": "E-Mail", "es": "Correo electrónico" },
+      "placeholder": {
+        "en": "parent@example.com",
+        "fr": "parent@exemple.fr",
+        "de": "eltern@beispiel.de",
+        "es": "padre@ejemplo.es"
+      },
+      "required": true
+    },
+    {
+      "key": "password",
+      "type": "secret",
+      "label": { "en": "Password", "fr": "Mot de passe", "de": "Passwort", "es": "Contraseña" },
+      "required": true
+    },
+    {
+      "key": "refresh_minutes",
+      "type": "number",
+      "label": {
+        "en": "Refresh interval (min)",
+        "fr": "Intervalle de mise à jour (min)",
+        "de": "Aktualisierungsintervall (Min.)",
+        "es": "Intervalo de actualización (min)"
+      },
+      "description": {
+        "en": "How often AppTable is read, in minutes (15 to 1440).",
+        "fr": "Fréquence de lecture d'AppTable, en minutes (15 à 1440).",
+        "de": "Wie oft AppTable gelesen wird, in Minuten (15 bis 1440).",
+        "es": "Cada cuánto se lee AppTable, en minutos (15 a 1440)."
+      },
+      "required": false,
+      "default": 60,
+      "min": 15,
+      "max": 1440
+    },
+    {
+      "key": "debug_logs",
+      "type": "boolean",
+      "label": {
+        "en": "Detailed logs",
+        "fr": "Logs détaillés",
+        "de": "Ausführliche Logs",
+        "es": "Registros detallados"
+      },
+      "description": {
+        "en": "Write debug lines in the integration logs, to diagnose a problem.",
+        "fr": "Écrit des lignes de débogage dans les logs de l'intégration, pour diagnostiquer un problème.",
+        "de": "Schreibt Debug-Zeilen in die Logs der Integration, um ein Problem zu untersuchen.",
+        "es": "Escribe líneas de depuración en los registros de la integración, para diagnosticar un problema."
+      },
+      "required": false,
+      "default": false
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "timeout_seconds": 60
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "new_invoice",
+      "label": {
+        "en": "A new canteen invoice is available",
+        "fr": "Une nouvelle facture de cantine est disponible",
+        "de": "Eine neue Kantinenrechnung ist verfügbar",
+        "es": "Hay una nueva factura del comedor"
+      },
+      "description": {
+        "en": "An invoice appeared in the AppTable account.",
+        "fr": "Une facture est apparue dans le compte AppTable.",
+        "de": "Im AppTable-Konto ist eine Rechnung erschienen.",
+        "es": "Ha aparecido una factura en la cuenta de AppTable."
+      },
+      "variables": [
+        {
+          "key": "label",
+          "type": "string",
+          "label": { "en": "Invoice", "fr": "Facture", "de": "Rechnung", "es": "Factura" }
+        },
+        {
+          "key": "amount",
+          "type": "number",
+          "label": {
+            "en": "Amount (€)",
+            "fr": "Montant (€)",
+            "de": "Betrag (€)",
+            "es": "Importe (€)"
+          }
+        },
+        {
+          "key": "period",
+          "type": "string",
+          "label": {
+            "en": "Month (YYYY-MM)",
+            "fr": "Mois (AAAA-MM)",
+            "de": "Monat (JJJJ-MM)",
+            "es": "Mes (AAAA-MM)"
+          }
+        },
+        {
+          "key": "paid",
+          "type": "boolean",
+          "label": {
+            "en": "Already paid",
+            "fr": "Déjà payée",
+            "de": "Bereits bezahlt",
+            "es": "Ya pagada"
+          }
+        }
+      ]
+    },
+    {
+      "key": "booking_changed",
+      "label": {
+        "en": "A canteen meal booking changed",
+        "fr": "Une réservation de repas a changé",
+        "de": "Eine Essensbuchung hat sich geändert",
+        "es": "Ha cambiado una reserva de comida"
+      },
+      "description": {
+        "en": "A child's meal today or tomorrow was booked or cancelled.",
+        "fr": "Le repas d'un enfant aujourd'hui ou demain a été réservé ou annulé.",
+        "de": "Das Essen eines Kindes heute oder morgen wurde gebucht oder storniert.",
+        "es": "Se ha reservado o cancelado la comida de un niño hoy o mañana."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Child", "fr": "Enfant", "de": "Kind", "es": "Niño" }
+        },
+        {
+          "key": "change",
+          "type": "multi_select",
+          "label": { "en": "Change", "fr": "Changement", "de": "Änderung", "es": "Cambio" },
+          "options": [
+            {
+              "value": "booked",
+              "label": { "en": "Booked", "fr": "Réservé", "de": "Gebucht", "es": "Reservado" }
+            },
+            {
+              "value": "cancelled",
+              "label": { "en": "Cancelled", "fr": "Annulé", "de": "Storniert", "es": "Cancelado" }
+            }
+          ]
+        },
+        {
+          "key": "when",
+          "type": "multi_select",
+          "label": { "en": "Day", "fr": "Jour", "de": "Tag", "es": "Día" },
+          "options": [
+            {
+              "value": "today",
+              "label": { "en": "Today", "fr": "Aujourd'hui", "de": "Heute", "es": "Hoy" }
+            },
+            {
+              "value": "tomorrow",
+              "label": { "en": "Tomorrow", "fr": "Demain", "de": "Morgen", "es": "Mañana" }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "child_name",
+          "type": "string",
+          "label": {
+            "en": "Child's first name",
+            "fr": "Prénom de l'enfant",
+            "de": "Vorname des Kindes",
+            "es": "Nombre del niño"
+          }
+        },
+        {
+          "key": "change",
+          "type": "string",
+          "label": {
+            "en": "Change (booked / cancelled)",
+            "fr": "Changement (booked / cancelled)",
+            "de": "Änderung (booked / cancelled)",
+            "es": "Cambio (booked / cancelled)"
+          }
+        },
+        {
+          "key": "when",
+          "type": "string",
+          "label": {
+            "en": "Day (today / tomorrow)",
+            "fr": "Jour (today / tomorrow)",
+            "de": "Tag (today / tomorrow)",
+            "es": "Día (today / tomorrow)"
+          }
+        },
+        {
+          "key": "date",
+          "type": "string",
+          "label": {
+            "en": "Date (YYYY-MM-DD)",
+            "fr": "Date (AAAA-MM-JJ)",
+            "de": "Datum (JJJJ-MM-TT)",
+            "es": "Fecha (AAAA-MM-DD)"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "get_menu",
+      "label": {
+        "en": "Get a child's canteen menu",
+        "fr": "Lire le menu de cantine d'un enfant",
+        "de": "Kantinen-Speiseplan eines Kindes lesen",
+        "es": "Leer el menú del comedor de un niño"
+      },
+      "description": {
+        "en": "The menu as one line of text, to send in a message or say aloud.",
+        "fr": "Le menu en une ligne de texte, à envoyer dans un message ou à dire à voix haute.",
+        "de": "Der Speiseplan als eine Textzeile, zum Senden in einer Nachricht oder zum Vorlesen.",
+        "es": "El menú en una línea de texto, para enviarlo en un mensaje o decirlo en voz alta."
+      },
+      "timeout_seconds": 60,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Child", "fr": "Enfant", "de": "Kind", "es": "Niño" },
+          "required": true
+        },
+        {
+          "key": "day",
+          "type": "select",
+          "label": { "en": "Day", "fr": "Jour", "de": "Tag", "es": "Día" },
+          "required": false,
+          "default": "next",
+          "options": [
+            {
+              "value": "next",
+              "label": {
+                "en": "Next meal",
+                "fr": "Prochain repas",
+                "de": "Nächste Mahlzeit",
+                "es": "Próxima comida"
+              }
+            },
+            {
+              "value": "today",
+              "label": { "en": "Today", "fr": "Aujourd'hui", "de": "Heute", "es": "Hoy" }
+            },
+            {
+              "value": "tomorrow",
+              "label": { "en": "Tomorrow", "fr": "Demain", "de": "Morgen", "es": "Mañana" }
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "key": "menu",
+          "type": "string",
+          "label": { "en": "Menu", "fr": "Menu", "de": "Speiseplan", "es": "Menú" }
+        },
+        {
+          "key": "has_menu",
+          "type": "boolean",
+          "label": {
+            "en": "A meal is served",
+            "fr": "Un repas est servi",
+            "de": "Es gibt ein Essen",
+            "es": "Se sirve una comida"
+          }
+        },
+        {
+          "key": "date",
+          "type": "string",
+          "label": {
+            "en": "Date (YYYY-MM-DD)",
+            "fr": "Date (AAAA-MM-JJ)",
+            "de": "Datum (JJJJ-MM-TT)",
+            "es": "Fecha (AAAA-MM-DD)"
+          }
+        },
+        {
+          "key": "booked",
+          "type": "boolean",
+          "label": {
+            "en": "Meal booked",
+            "fr": "Repas réservé",
+            "de": "Essen gebucht",
+            "es": "Comida reservada"
+          }
+        },
+        {
+          "key": "child_name",
+          "type": "string",
+          "label": {
+            "en": "Child's first name",
+            "fr": "Prénom de l'enfant",
+            "de": "Vorname des Kindes",
+            "es": "Nombre del niño"
+          }
+        }
+      ]
+    },
+    {
+      "key": "refresh",
+      "label": {
+        "en": "Refresh AppTable now",
+        "fr": "Actualiser AppTable maintenant",
+        "de": "AppTable jetzt aktualisieren",
+        "es": "Actualizar AppTable ahora"
+      },
+      "description": {
+        "en": "Read menus, bookings and invoices without waiting for the interval.",
+        "fr": "Lit menus, réservations et factures sans attendre l'intervalle.",
+        "de": "Liest Speisepläne, Buchungen und Rechnungen, ohne auf das Intervall zu warten.",
+        "es": "Lee menús, reservas y facturas sin esperar al intervalo."
+      },
+      "timeout_seconds": 60,
+      "outputs": [
+        {
+          "key": "children",
+          "type": "number",
+          "label": {
+            "en": "Children",
+            "fr": "Enfants",
+            "de": "Kinder",
+            "es": "Niños"
+          }
+        },
+        {
+          "key": "amount_due",
+          "type": "number",
+          "label": {
+            "en": "Amount due (€)",
+            "fr": "Montant à payer (€)",
+            "de": "Offener Betrag (€)",
+            "es": "Importe a pagar (€)"
+          }
+        },
+        {
+          "key": "invoices_to_pay",
+          "type": "number",
+          "label": {
+            "en": "Invoices to pay",
+            "fr": "Factures à payer",
+            "de": "Offene Rechnungen",
+            "es": "Facturas a pagar"
+          }
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "menu",
+      "label": {
+        "en": "Canteen menu",
+        "fr": "Menu de la cantine",
+        "de": "Kantinen-Speiseplan",
+        "es": "Menú del comedor"
+      },
+      "description": {
+        "en": "What the children eat at school, and whether their meal is booked.",
+        "fr": "Ce que mangent les enfants à l'école, et si leur repas est réservé.",
+        "de": "Was die Kinder in der Schule essen und ob ihr Essen gebucht ist.",
+        "es": "Qué comen los niños en el colegio y si su comida está reservada."
+      },
+      "icon": "coffee",
+      "settings": [
+        {
+          "key": "day",
+          "type": "select",
+          "label": {
+            "en": "Day shown",
+            "fr": "Jour affiché",
+            "de": "Angezeigter Tag",
+            "es": "Día mostrado"
+          },
+          "required": false,
+          "default": "next",
+          "options": [
+            {
+              "value": "next",
+              "label": {
+                "en": "Next meal",
+                "fr": "Prochain repas",
+                "de": "Nächste Mahlzeit",
+                "es": "Próxima comida"
+              }
+            },
+            {
+              "value": "today",
+              "label": { "en": "Today", "fr": "Aujourd'hui", "de": "Heute", "es": "Hoy" }
+            },
+            {
+              "value": "tomorrow",
+              "label": { "en": "Tomorrow", "fr": "Demain", "de": "Morgen", "es": "Mañana" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "account",
+      "label": {
+        "en": "Canteen account",
+        "fr": "Compte cantine",
+        "de": "Kantinenkonto",
+        "es": "Cuenta del comedor"
+      },
+      "description": {
+        "en": "Amount due, invoices to pay and tomorrow's meal bookings.",
+        "fr": "Montant à payer, factures en attente et réservations de demain.",
+        "de": "Offener Betrag, offene Rechnungen und die Essensbuchungen für morgen.",
+        "es": "Importe a pagar, facturas pendientes y reservas de mañana."
+      },
+      "icon": "credit-card",
+      "action_timeout_seconds": 60
+    }
+  ]
+}
