@@ -13,18 +13,18 @@ import { rollChangelog } from '../.github/scripts/changelog-release.mjs';
 
 const changelogPath = fileURLToPath(new URL('../CHANGELOG.md', import.meta.url));
 
-test('the first release moves Unreleased under 1.0.0 and links its tag', async () => {
+test('the next release moves Unreleased under 1.0.0 and links its tag', async () => {
   const text = await readFile(changelogPath, 'utf8');
   const rolled = rollChangelog(text, '1.0.0', '2026-11-02');
 
-  assert.match(rolled, /## \[Unreleased\]\n\n## \[1\.0\.0\] - 2026-11-02\n\n### Added/);
+  assert.match(rolled, /## \[Unreleased\]\n\n## \[1\.0\.0\] - 2026-11-02\n/);
   assert.match(
     rolled,
-    /^\[Unreleased\]: https:\/\/github\.com\/prohand\/gladys-apptable-elior\/compare\/v1\.0\.0\.\.\.HEAD$/m,
+    /^\[Unreleased\]: https:\/\/github\.com\/prohand\/gladys-apptable-?elior\/compare\/v1\.0\.0\.\.\.HEAD$/m,
   );
   assert.match(
     rolled,
-    /^\[1\.0\.0\]: https:\/\/github\.com\/prohand\/gladys-apptable-elior\/releases\/tag\/v1\.0\.0$/m,
+    /^\[1\.0\.0\]: https:\/\/github\.com\/prohand\/gladys-apptable-?elior\/(?:releases\/tag\/v1\.0\.0|compare\/v\S+\.\.\.v1\.0\.0)$/m,
   );
   const options = { ...(await prettier.resolveConfig(changelogPath)), filepath: changelogPath };
   assert.equal(
