@@ -10,6 +10,8 @@ the version's GitHub Release.
 
 ## [Unreleased]
 
+## [0.0.3] - 2026-11-16
+
 - Update `@gladysassistant/integration-sdk` to 0.16.1 (security update).
 
 ## [0.0.2] - 2026-11-16
@@ -33,6 +35,7 @@ the version's GitHub Release.
 - CI (Prettier, ESLint, tests on Node 22 and 24, store checks, Docker build), UI-driven
   release, multi-arch image build, GitHub Releases, Dependabot.
 
-[Unreleased]: https://github.com/prohand/gladys-apptable-elior/compare/v0.0.2...HEAD
+[Unreleased]: https://github.com/prohand/gladys-apptable-elior/compare/v0.0.3...HEAD
+[0.0.3]: https://github.com/prohand/gladys-apptable-elior/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/prohand/gladys-apptable-elior/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/prohand/gladys-apptable-elior/releases/tag/v0.0.1
