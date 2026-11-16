@@ -33,10 +33,11 @@ function registeredHandlers() {
 
 test('the manifest version, the image tag and package.json move together', () => {
   assert.equal(manifest.version, pkg.version);
-  assert.equal(manifest.docker_image, `ghcr.io/prohand/gladys-apptable-elior:${pkg.version}`);
+  // The Release workflow names the image after the repository (renamed gladys-apptableelior).
+  assert.equal(manifest.docker_image, `ghcr.io/prohand/gladys-apptableelior:${pkg.version}`);
   assert.match(
     manifest.cover_image,
-    /^https:\/\/raw\.githubusercontent\.com\/prohand\/gladys-apptable-elior\//,
+    /^https:\/\/raw\.githubusercontent\.com\/prohand\/gladys-apptable-?elior\//,
   );
 });
 
